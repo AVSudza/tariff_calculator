@@ -5,3 +5,17 @@ cost:
   rub:
     perKg: 400
     minimal: 350
+    perCubicMeter: 10000
+
+dimension:
+  min:
+    weight: 0
+    length: 0
+    width: 0
+    height: 0
+  max:
+    weight: 150000
+    length: 1500000
+    width: 1500000
+    height: 1500000
+  stepNormalize: 50

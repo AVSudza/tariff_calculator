@@ -1,6 +1,7 @@
 package ru.fastdelivery.domain.delivery.shipment;
 
 import ru.fastdelivery.domain.common.currency.Currency;
+import ru.fastdelivery.domain.common.volume.Volume;
 import ru.fastdelivery.domain.common.weight.Weight;
 import ru.fastdelivery.domain.delivery.pack.Pack;
 
@@ -12,11 +13,15 @@ import java.util.List;
  */
 public record Shipment(
         List<Pack> packages,
-        Currency currency
-) {
+        Currency currency) {
     public Weight weightAllPackages() {
         return packages.stream()
                 .map(Pack::weight)
                 .reduce(Weight.zero(), Weight::add);
+    }
+    public Volume volumeAllPackages() {
+        return packages.stream()
+                .map(Pack::getVolume)
+                .reduce(Volume.zero(), Volume::add);
     }
 }

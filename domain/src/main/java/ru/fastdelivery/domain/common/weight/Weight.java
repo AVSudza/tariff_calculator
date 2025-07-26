@@ -12,13 +12,16 @@ import java.math.RoundingMode;
 public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
 
     public Weight {
+        if (weightGrams == null) {
+            throw new IllegalArgumentException("Weight cannot be empty!");
+        }
         if (isLessThanZero(weightGrams)) {
             throw new IllegalArgumentException("Weight cannot be below Zero!");
         }
     }
 
-    private static boolean isLessThanZero(BigInteger price) {
-        return BigInteger.ZERO.compareTo(price) > 0;
+    private static boolean isLessThanZero(BigInteger weight) {
+        return BigInteger.ZERO.compareTo(weight) > 0;
     }
 
     public static Weight zero() {
