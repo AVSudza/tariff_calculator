@@ -21,7 +21,7 @@ public record Shipment(
     }
     public Volume volumeAllPackages() {
         return packages.stream()
-                .map(Pack::getVolume)
+                .map(Pack::getNormalizeVolume)
                 .reduce(Volume.zero(), Volume::add);
     }
 }

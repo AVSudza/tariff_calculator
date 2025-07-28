@@ -12,13 +12,16 @@ import java.math.BigInteger;
  * Упаковка груза
  *
  * @param weight вес товаров в упаковке
+ * @param length длина упаковки
+ * @param width ширина упаковки
+ * @param height высота упаковки
  */
 public record Pack(Weight weight, Length length, Width width, Height height) {
 
     private static final Weight maxWeight = new Weight(BigInteger.valueOf(150_000));
-    private static final Length maxLength = new Length(BigInteger.valueOf(1_500_000));
-    private static final Width maxWidth = new Width(BigInteger.valueOf(1_500_000));
-    private static final Height maxHeight = new Height(BigInteger.valueOf(1_500_000));
+    private static final Length maxLength = new Length(BigInteger.valueOf(1_500));
+    private static final Width maxWidth = new Width(BigInteger.valueOf(1_500));
+    private static final Height maxHeight = new Height(BigInteger.valueOf(1_500));
     private static final BigInteger stepNormalize = new BigInteger(String.valueOf(50));
 
     public Pack {
@@ -37,6 +40,10 @@ public record Pack(Weight weight, Length length, Width width, Height height) {
     }
 
     public Volume getVolume() {
+        return new Volume(width.widthMills().multiply(length.lengthMills()).multiply(height.heightMills())) ;
+    }
+
+    public Volume getNormalizeVolume() {
         BigInteger normalWidth = normalize(width.widthMills());
         BigInteger normalLength = normalize(length.lengthMills());
         BigInteger normalHeight = normalize(height.heightMills());
@@ -45,6 +52,7 @@ public record Pack(Weight weight, Length length, Width width, Height height) {
 
     private BigInteger normalize(BigInteger dimension) {
         BigInteger remainderValue = dimension.remainder(stepNormalize);
-        return dimension.add((remainderValue.intValue() == 0) ? BigInteger.ZERO : stepNormalize.subtract(dimension.remainder(stepNormalize)));
+        return dimension.add((remainderValue.intValue() == 0) ? BigInteger.ZERO
+                : stepNormalize.subtract(dimension.remainder(stepNormalize)));
     }
 }

@@ -37,11 +37,6 @@ public class CalculateController {
     })
     public CalculatePackagesResponse calculate(
             @Valid @RequestBody CalculatePackagesRequest request) {
-//        var packsWeights = request.packages().stream()
-//                .map(CargoPackage::weight)
-//                .map(Weight::new)
-//                .map(Pack::new)
-//                .toList();
 
         var packs = request.packages().stream()
                 .map(cargoPackage -> new Pack(
@@ -53,8 +48,6 @@ public class CalculateController {
                 )
                 .toList();
 
-
-//        var shipment = new Shipment(packsWeights, currencyFactory.create(request.currencyCode()));
         var shipment = new Shipment(packs, currencyFactory.create(request.currencyCode()));
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         var minimalPrice = tariffCalculateUseCase.minimalPrice();

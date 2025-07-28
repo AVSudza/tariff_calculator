@@ -33,7 +33,7 @@ class CalculateControllerTest extends ControllerTest {
     @DisplayName("Валидные данные для расчета стоимость -> Ответ 200")
     void whenValidInputData_thenReturn200() {
         var request = new CalculatePackagesRequest(
-                List.of(new CargoPackage(BigInteger.TEN)), "RUB");
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.ONE, BigInteger.ONE, BigInteger.ONE)), "RUB");
         var rub = new CurrencyFactory(code -> true).create("RUB");
         when(useCase.calc(any())).thenReturn(new Price(BigDecimal.valueOf(10), rub));
         when(useCase.minimalPrice()).thenReturn(new Price(BigDecimal.valueOf(5), rub));
@@ -42,6 +42,72 @@ class CalculateControllerTest extends ControllerTest {
                 restTemplate.postForEntity(baseCalculateApi, request, CalculatePackagesResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Длина < 0 -> Ответ 400")
+    void whenNegativeLength_thenReturn400() {
+        var request = new CalculatePackagesRequest(
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.valueOf(-10), BigInteger.ONE, BigInteger.ONE)), "RUB");
+
+        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Ширина < 0 -> Ответ 400")
+    void whenNegativeWidth_thenReturn400() {
+        var request = new CalculatePackagesRequest(
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.ONE, BigInteger.valueOf(-10), BigInteger.ONE)), "RUB");
+
+        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Высота < 0 -> Ответ 400")
+    void whenNegativeHeight_thenReturn400() {
+        var request = new CalculatePackagesRequest(
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(-10))), "RUB");
+
+        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Длина > 1500мм -> Ответ 400")
+    void whenLengthMoreThan1500mm_thenReturn400() {
+        var request = new CalculatePackagesRequest(
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.valueOf(1501), BigInteger.ONE, BigInteger.ONE)), "RUB");
+
+        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Ширина > 1500мм -> Ответ 400")
+    void whenWidthMoreThan1500mm_thenReturn400() {
+        var request = new CalculatePackagesRequest(
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.ONE, BigInteger.valueOf(1501), BigInteger.ONE)), "RUB");
+
+        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Высота > 1500мм -> Ответ 400")
+    void whenHeightMoreThan1500mm_thenReturn400() {
+        var request = new CalculatePackagesRequest(
+                List.of(new CargoPackage(BigInteger.TEN, BigInteger.ONE, BigInteger.ONE, BigInteger.valueOf(1501))), "RUB");
+
+        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
