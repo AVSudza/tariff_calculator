@@ -10,16 +10,25 @@ import java.math.RoundingMode;
  * @param heightMills высота в миллиметрах
  */
 
-public record Height(BigInteger heightMills) implements Comparable<Height> {
-
-    public Height {
+public record Height(BigInteger heightMills, int maxHeight) implements Comparable<Height> {
+    public Height(BigInteger heightMills, int maxHeight) {
+        this.heightMills = heightMills;
+        this.maxHeight = maxHeight;
         if (heightMills == null) {
             throw new IllegalArgumentException("Height cannot be empty!");
         }
         if (isLessThanZero(heightMills)) {
             throw new IllegalArgumentException("Height cannot be below Zero!");
         }
+        if (greaterThan(BigInteger.valueOf(maxHeight))) {
+            throw new IllegalArgumentException("Height cannot be higher than " + maxHeight + "!");
+        }
     }
+
+    public Height(BigInteger heightMills) {
+        this(heightMills, Integer.MAX_VALUE);
+    }
+
 
     private static boolean isLessThanZero(BigInteger height) {
         return BigInteger.ZERO.compareTo(height) > 0;
@@ -55,5 +64,9 @@ public record Height(BigInteger heightMills) implements Comparable<Height> {
 
     public boolean greaterThan(Height h) {
         return heightMills.compareTo(h.heightMills) > 0;
+    }
+
+    public boolean greaterThan(BigInteger maxHeight) {
+        return heightMills.compareTo(maxHeight) > 0;
     }
 }

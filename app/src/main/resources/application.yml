@@ -8,14 +8,33 @@ cost:
     perCubicMeter: 10000
 
 dimension:
-  min:
-    weight: 0
-    length: 0
-    width: 0
-    height: 0
-  max:
-    weight: 150000
-    length: 1500000
-    width: 1500000
-    height: 1500000
+  weight:
+    min: 0
+    max: 150000
+  length:
+    min: 0
+    max: 1500000
+  width:
+    min: 0
+    max: 1500000
+  height:
+    min: 0
+    max: 1500000
   stepNormalize: 50
+
+coordinates-points:
+  coordinates:
+    departure:
+      latitude:
+        min: 45
+        max: 65
+      longitude :
+        min: 30
+        max: 96
+    destination:
+      latitude:
+        min: 45
+        max: 65
+      longitude :
+        min: 30
+        max: 96

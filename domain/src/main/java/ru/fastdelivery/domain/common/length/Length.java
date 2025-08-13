@@ -10,15 +10,24 @@ import java.math.RoundingMode;
  * @param lengthMills длина в миллиметрах
  */
 
-public record Length(BigInteger lengthMills) implements Comparable<Length> {
+public record Length(BigInteger lengthMills, int maxLength) implements Comparable<Length> {
 
-    public Length {
+    public Length(BigInteger lengthMills, int maxLength) {
+        this.lengthMills = lengthMills;
+        this.maxLength = maxLength;
         if (lengthMills == null) {
             throw new IllegalArgumentException("Length cannot be empty!");
         }
         if (isLessThanZero(lengthMills)) {
             throw new IllegalArgumentException("Length cannot be below Zero!");
         }
+        if (greaterThan(BigInteger.valueOf(maxLength))) {
+            throw new IllegalArgumentException("Length cannot be higher than " + maxLength + "!");
+        }
+    }
+
+    public Length(BigInteger lengthMills) {
+        this(lengthMills, Integer.MAX_VALUE);
     }
 
     private static boolean isLessThanZero(BigInteger length) {
@@ -47,13 +56,16 @@ public record Length(BigInteger lengthMills) implements Comparable<Length> {
         return lengthMills.compareTo(length.lengthMills) == 0;
     }
 
-
     @Override
     public int compareTo(Length w) {
         return w.lengthMills().compareTo(lengthMills);
     }
 
     public boolean greaterThan(Length w) {
-        return lengthMills.compareTo(w.lengthMills) > 0;
+        return lengthMills().compareTo(w.lengthMills()) > 0;
+    }
+
+    public boolean greaterThan(BigInteger maxLength) {
+        return lengthMills().compareTo(maxLength) > 0;
     }
 }

@@ -4,11 +4,18 @@ import ru.fastdelivery.domain.common.price.Price;
 
 import java.math.BigDecimal;
 
+/**
+ * Ответ на вычисление цены доставки пакетов
+ *
+ * @param totalPrice Общая цена доставки пакетов
+ * @param minimalPrice Минимальная цена доставки пакетов
+ * @param currencyCode Трехбуквенный код валюты цены доставки пакетов
+ */
 public record CalculatePackagesResponse(
         BigDecimal totalPrice,
         BigDecimal minimalPrice,
-        String currencyCode
-) {
+        String currencyCode) {
+
     public CalculatePackagesResponse(Price totalPrice, Price minimalPrice) {
         this(totalPrice.amount(), minimalPrice.amount(), totalPrice.currency().getCode());
 

@@ -1,5 +1,6 @@
 package ru.fastdelivery.domain.common.weight;
 
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -9,14 +10,19 @@ import java.math.RoundingMode;
  *
  * @param weightGrams вес в граммах
  */
-public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
+public record Weight(BigInteger weightGrams, int maxWeight) implements Comparable<Weight> {
 
-    public Weight {
+    public Weight(BigInteger weightGrams, int maxWeight) {
+        this.weightGrams = weightGrams;
+        this.maxWeight = maxWeight;
         if (weightGrams == null) {
             throw new IllegalArgumentException("Weight cannot be empty!");
         }
         if (isLessThanZero(weightGrams)) {
             throw new IllegalArgumentException("Weight cannot be below Zero!");
+        }
+        if (greaterThan(BigInteger.valueOf(maxWeight))) {
+            throw new IllegalArgumentException("Weight cannot be higher than " + maxWeight + "!");
         }
     }
 
@@ -25,7 +31,7 @@ public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
     }
 
     public static Weight zero() {
-        return new Weight(BigInteger.ZERO);
+        return new Weight(BigInteger.ZERO, Integer.MAX_VALUE);
     }
 
     public BigDecimal kilograms() {
@@ -34,7 +40,7 @@ public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
     }
 
     public Weight add(Weight additionalWeight) {
-        return new Weight(this.weightGrams.add(additionalWeight.weightGrams));
+        return new Weight(this.weightGrams.add(additionalWeight.weightGrams), maxWeight);
     }
 
     @Override
@@ -54,5 +60,9 @@ public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
 
     public boolean greaterThan(Weight w) {
         return weightGrams().compareTo(w.weightGrams()) > 0;
+    }
+
+    public boolean greaterThan(BigInteger maxWeight) {
+        return weightGrams().compareTo(maxWeight) > 0;
     }
 }

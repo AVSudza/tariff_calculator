@@ -9,8 +9,11 @@ import ru.fastdelivery.domain.common.height.Height;
 import ru.fastdelivery.domain.common.length.Length;
 import ru.fastdelivery.domain.common.price.Price;
 import ru.fastdelivery.domain.common.weight.Weight;
+import ru.fastdelivery.domain.common.weight.WeightPropertiesProvider;
 import ru.fastdelivery.domain.common.width.Width;
 import ru.fastdelivery.domain.delivery.pack.Pack;
+import ru.fastdelivery.domain.delivery.points.Departure;
+import ru.fastdelivery.domain.delivery.points.Destination;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
 
 import java.math.BigDecimal;
@@ -24,13 +27,16 @@ import static org.mockito.Mockito.when;
 class TariffCalculateUseCaseTest {
 
     final WeightPriceProvider weightPriceProvider = mock(WeightPriceProvider.class);
+    final WeightPropertiesProvider weightPropertiesProvider = mock(WeightPropertiesProvider.class);
+    final CoordinatesPropertiesProvider coordinatesPropertiesProvider = mock(CoordinatesPropertiesProvider.class);
     final Currency currency = new CurrencyFactory(code -> true).create("RUB");
 
-    final TariffCalculateUseCase tariffCalculateUseCase = new TariffCalculateUseCase(weightPriceProvider);
+    final TariffCalculateUseCase tariffCalculateUseCase = new TariffCalculateUseCase(weightPriceProvider,
+            coordinatesPropertiesProvider);
 
-    final Length lengthOne = new Length(BigInteger.ONE);
+    final Length lengthOne = new Length(BigInteger.ONE, Integer.MAX_VALUE);
     final Width widthOne = new Width(BigInteger.ONE);
-    final Height heightOne = new Height(BigInteger.ONE);
+    final Height heightOne = new Height(BigInteger.ONE, Integer.MAX_VALUE);
 
     @Test
     @DisplayName("Расчет стоимости доставки по весу -> успешно")
@@ -42,9 +48,14 @@ class TariffCalculateUseCaseTest {
         when(weightPriceProvider.minimalPrice()).thenReturn(minimalPrice);
         when(weightPriceProvider.costPerKg()).thenReturn(pricePerKg);
         when(weightPriceProvider.costPerCubicMeter()).thenReturn(pricePerCubicMeter);
+        when(weightPropertiesProvider.getMax()).thenReturn(150000);
 
-        var shipment = new Shipment(List.of(new Pack(new Weight(BigInteger.valueOf(1200)), lengthOne, widthOne, heightOne)),
-                new CurrencyFactory(code -> true).create("RUB"));
+        var shipment = new Shipment(List.of(
+                new Pack(new Weight(BigInteger.valueOf(1200), weightPropertiesProvider.getMax()),
+                lengthOne, widthOne, heightOne, BigInteger.valueOf(50))),
+                new CurrencyFactory(code -> true).create("RUB"),
+                new Destination(BigDecimal.valueOf(55.555555), BigDecimal.valueOf(33.333333)),
+                new Departure(BigDecimal.valueOf(55.555555), BigDecimal.valueOf(33.333333)));
         var expectedPrice = new Price(BigDecimal.valueOf(120), currency);
 
         var actualPrice = tariffCalculateUseCase.calc(shipment);
@@ -64,9 +75,14 @@ class TariffCalculateUseCaseTest {
         when(weightPriceProvider.minimalPrice()).thenReturn(minimalPrice);
         when(weightPriceProvider.costPerKg()).thenReturn(pricePerKg);
         when(weightPriceProvider.costPerCubicMeter()).thenReturn(pricePerCubicMeter);
+        when(weightPropertiesProvider.getMax()).thenReturn(150000);
 
-        var shipment = new Shipment(List.of(new Pack(new Weight(BigInteger.valueOf(1200)), lengthOne, widthOne, heightOne)),
-                new CurrencyFactory(code -> true).create("RUB"));
+        var shipment = new Shipment(
+                List.of(new Pack(new Weight(BigInteger.valueOf(1200),weightPropertiesProvider.getMax()),
+                lengthOne, widthOne, heightOne, BigInteger.valueOf(50))),
+                new CurrencyFactory(code -> true).create("RUB"),
+                new Destination(BigDecimal.valueOf(55.555555), BigDecimal.valueOf(33.333333)),
+                new Departure(BigDecimal.valueOf(55.555555), BigDecimal.valueOf(33.333333)));
         var expectedPrice = new Price(BigDecimal.valueOf(1200), currency);
 
         var actualPrice = tariffCalculateUseCase.calc(shipment);

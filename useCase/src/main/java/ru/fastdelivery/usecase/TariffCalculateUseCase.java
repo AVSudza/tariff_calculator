@@ -10,11 +10,13 @@ import javax.inject.Named;
 @RequiredArgsConstructor
 public class TariffCalculateUseCase {
     private final WeightPriceProvider weightPriceProvider;
+    private final CoordinatesPropertiesProvider coordinatesPropertiesProvider;
 
     public Price calc(Shipment shipment) {
         var weightAllPackagesKg = shipment.weightAllPackages().kilograms();
         var volumeAllPackagesMeter = shipment.volumeAllPackages().cubicMeters();
         var minimalPrice = weightPriceProvider.minimalPrice();
+        coordinatesPropertiesProvider.isPossible(shipment);
 
         Price weightPrice = weightPriceProvider
                 .costPerKg()

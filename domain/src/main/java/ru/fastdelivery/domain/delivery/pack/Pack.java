@@ -15,30 +15,15 @@ import java.math.BigInteger;
  * @param length длина упаковки
  * @param width ширина упаковки
  * @param height высота упаковки
+ * @param stepNormalize шаг нормализации размеров
  */
-public record Pack(Weight weight, Length length, Width width, Height height) {
-
-    private static final Weight maxWeight = new Weight(BigInteger.valueOf(150_000));
-    private static final Length maxLength = new Length(BigInteger.valueOf(1_500));
-    private static final Width maxWidth = new Width(BigInteger.valueOf(1_500));
-    private static final Height maxHeight = new Height(BigInteger.valueOf(1_500));
-    private static final BigInteger stepNormalize = new BigInteger(String.valueOf(50));
+public record Pack(Weight weight, Length length, Width width, Height height, BigInteger stepNormalize) {
 
     public Pack {
-        if (weight.greaterThan(maxWeight)) {
-            throw new IllegalArgumentException("Package weight can't be more than " + maxWeight);
-        }
-        if (length.greaterThan(maxLength)) {
-            throw new IllegalArgumentException("Package length can't be more than " + maxLength);
-        }
-        if (width.greaterThan(maxWidth)) {
-            throw new IllegalArgumentException("Package width can't be more than " + maxWidth);
-        }
-        if (height.greaterThan(maxHeight)) {
-            throw new IllegalArgumentException("Package height can't be more than " + maxHeight);
+        if (weight.greaterThan(new Weight(BigInteger.valueOf(weight.maxWeight()), weight.maxWeight()))) {
+            throw new IllegalArgumentException("Package can't be more than " + weight.maxWeight());
         }
     }
-
     public Volume getVolume() {
         return new Volume(width.widthMills().multiply(length.lengthMills()).multiply(height.heightMills())) ;
     }
