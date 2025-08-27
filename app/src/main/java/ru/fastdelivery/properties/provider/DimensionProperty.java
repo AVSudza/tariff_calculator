@@ -3,6 +3,7 @@ package ru.fastdelivery.properties.provider;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import ru.fastdelivery.domain.common.distanceBaseCost.DistanceBaseCostProvider;
 import ru.fastdelivery.domain.common.stepNormalize.StepNormalizeProvider;
 
 /**
@@ -11,11 +12,17 @@ import ru.fastdelivery.domain.common.stepNormalize.StepNormalizeProvider;
 @Configuration
 @ConfigurationProperties("dimension")
 @Setter
-public class StepNormalizeProperty implements StepNormalizeProvider {
+public class DimensionProperty implements StepNormalizeProvider, DistanceBaseCostProvider {
     private int stepNormalize;
+    private int distanceBaseCost;
 
     @Override
-    public int get() {
+    public int getStepNormalize() {
         return stepNormalize;
+    }
+
+    @Override
+    public int getDistanceBaseCost() {
+        return distanceBaseCost;
     }
 }

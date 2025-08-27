@@ -3,9 +3,9 @@ package ru.fastdelivery.properties.provider;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import ru.fastdelivery.domain.delivery.coordinates.Coordinates;
+import ru.fastdelivery.domain.delivery.coordinates.CoordinatesProperty;
+import ru.fastdelivery.domain.delivery.points.CoordinatesPropertiesProvider;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
-import ru.fastdelivery.usecase.CoordinatesPropertiesProvider;
 
 /**
  * Настройки координат пунктов доставки из конфига
@@ -14,46 +14,57 @@ import ru.fastdelivery.usecase.CoordinatesPropertiesProvider;
 @ConfigurationProperties("coordinates-points")
 @Setter
 public class CoordinatesProperties implements CoordinatesPropertiesProvider {
-    private Coordinates coordinates;
+    private CoordinatesProperty coordinates;
 
-    @Override
-    public boolean isPossible(Shipment shipment) {
-        if (shipment.destination().latitude() == null) {
-            throw new IllegalArgumentException("Latitude value destination is empty");
+    public boolean isPossible(Shipment shipment) throws IllegalArgumentException {
+
+        if (shipment.destination().getLatitude() == null) {
+            throw new IllegalArgumentException("Latitude destination value is empty");
         }
-        if (shipment.destination().longitude() == null) {
-            throw new IllegalArgumentException("Longitude value destination is empty");
+        if (shipment.destination().getLongitude() == null) {
+            throw new IllegalArgumentException("Longitude destination value is empty");
         }
-        if (shipment.departure().latitude() == null) {
-            throw new IllegalArgumentException("Latitude value departure is empty");
+        if (shipment.departure().getLatitude() == null) {
+            throw new IllegalArgumentException("Latitude departure value is empty");
         }
-        if (shipment.departure().longitude() == null) {
-            throw new IllegalArgumentException("Longitude value departure is empty");
+        if (shipment.departure().getLongitude() == null) {
+            throw new IllegalArgumentException("Longitude departure value is empty");
         }
-        if (shipment.destination().latitude().compareTo(coordinates.getDestination().getLatitude().getMax()) > 0) {
-            throw new IllegalArgumentException("Latitude value destination is higher than allowed");
+        if (shipment.destination().getLatitude().compareTo(coordinates.getDestination().getLatitude().getMax()) > 0) {
+            throw new IllegalArgumentException("Latitude destination value is higher than allowed");
         }
-        if (shipment.destination().latitude().compareTo(coordinates.getDestination().getLatitude().getMin()) < 0) {
-            throw new IllegalArgumentException("Latitude value destination is less than allowed");
+        if (shipment.destination().getLatitude().compareTo(coordinates.getDestination().getLatitude().getMin()) < 0) {
+            throw new IllegalArgumentException("Latitude destination value is less than allowed");
         }
-        if (shipment.destination().longitude().compareTo(coordinates.getDestination().getLongitude().getMax()) > 0) {
-            throw new IllegalArgumentException("Longitude value destination is higher than allowed");
+        if (shipment.destination().getLongitude().compareTo(coordinates.getDestination().getLongitude().getMax()) > 0) {
+            throw new IllegalArgumentException("Longitude destination value is higher than allowed");
         }
-        if (shipment.destination().longitude().compareTo(coordinates.getDestination().getLongitude().getMin()) < 0) {
-            throw new IllegalArgumentException("Longitude value destination is less than allowed");
+        if (shipment.destination().getLongitude().compareTo(coordinates.getDestination().getLongitude().getMin()) < 0) {
+            throw new IllegalArgumentException("Longitude destination value is less than allowed");
         }
-        if (shipment.departure().latitude().compareTo(coordinates.getDeparture().getLatitude().getMax()) > 0) {
-            throw new IllegalArgumentException("Latitude value departure is higher than allowed");
+        if (shipment.departure().getLatitude().compareTo(coordinates.getDeparture().getLatitude().getMax()) > 0) {
+            throw new IllegalArgumentException("Latitude departure value is higher than allowed");
         }
-        if (shipment.departure().latitude().compareTo(coordinates.getDeparture().getLatitude().getMin()) < 0) {
-            throw new IllegalArgumentException("Latitude value departure is less than allowed");
+        if (shipment.departure().getLatitude().compareTo(coordinates.getDeparture().getLatitude().getMin()) < 0) {
+            throw new IllegalArgumentException("Latitude departure value is less than allowed");
         }
-        if (shipment.departure().longitude().compareTo(coordinates.getDeparture().getLongitude().getMax()) > 0) {
-            throw new IllegalArgumentException("Longitude value departure is higher than allowed");
+        if (shipment.departure().getLongitude().compareTo(coordinates.getDeparture().getLongitude().getMax()) > 0) {
+            throw new IllegalArgumentException("Longitude departure value is higher than allowed");
         }
-        if (shipment.departure().longitude().compareTo(coordinates.getDeparture().getLongitude().getMin()) < 0) {
-            throw new IllegalArgumentException("Longitude value departure is less than allowed");
+        if (shipment.departure().getLongitude().compareTo(coordinates.getDeparture().getLongitude().getMin()) < 0) {
+            throw new IllegalArgumentException("Longitude departure value is less than allowed");
         }
         return true;
     }
+
+    @Override
+    public boolean isPossible() {
+        return false;
+    }
+
+    @Override
+    public CoordinatesProperty coordinates() {
+        return coordinates;
+    }
+
 }

@@ -23,7 +23,17 @@ public record Pack(Weight weight, Length length, Width width, Height height, Big
         if (weight.greaterThan(new Weight(BigInteger.valueOf(weight.maxWeight()), weight.maxWeight()))) {
             throw new IllegalArgumentException("Package can't be more than " + weight.maxWeight());
         }
+        if (length.greaterThan(new Length(BigInteger.valueOf(length.maxLength()), length.maxLength()))) {
+            throw new IllegalArgumentException("Package length can't be more than " + length.maxLength());
+        }
+        if (width.greaterThan(new Width(BigInteger.valueOf(width.maxWidth()), width.maxWidth()))) {
+            throw new IllegalArgumentException("Package width can't be more than " + width.maxWidth());
+        }
+        if (height.greaterThan(new Height(BigInteger.valueOf(height.maxHeight()), height.maxHeight()))) {
+            throw new IllegalArgumentException("Package width can't be more than " + height.maxHeight());
+        }
     }
+
     public Volume getVolume() {
         return new Volume(width.widthMills().multiply(length.lengthMills()).multiply(height.heightMills())) ;
     }

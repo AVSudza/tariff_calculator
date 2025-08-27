@@ -13,14 +13,15 @@ dimension:
     max: 150000
   length:
     min: 0
-    max: 1500000
+    max: 1500
   width:
     min: 0
-    max: 1500000
+    max: 1500
   height:
     min: 0
-    max: 1500000
+    max: 1500
   stepNormalize: 50
+  distanceBaseCost: 450
 
 coordinates-points:
   coordinates:

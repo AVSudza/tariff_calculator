@@ -4,8 +4,8 @@ import ru.fastdelivery.domain.common.currency.Currency;
 import ru.fastdelivery.domain.common.volume.Volume;
 import ru.fastdelivery.domain.common.weight.Weight;
 import ru.fastdelivery.domain.delivery.pack.Pack;
-import ru.fastdelivery.domain.delivery.points.Departure;
-import ru.fastdelivery.domain.delivery.points.Destination;
+import ru.fastdelivery.domain.delivery.points.DeparturePoint;
+import ru.fastdelivery.domain.delivery.points.DestinationPoint;
 
 import java.util.List;
 
@@ -17,7 +17,24 @@ import java.util.List;
  */
 public record Shipment(
         List<Pack> packages, Currency currency,
-        Destination destination, Departure departure) {
+        DestinationPoint destination, DeparturePoint departure) {
+    public Shipment(List<Pack> packages, Currency currency,
+                    DestinationPoint destination, DeparturePoint departure) {
+        this.packages = packages;
+        this.currency = currency;
+        this.destination = destination;
+        this.departure = departure;
+
+        if (currency == null) {
+            throw new IllegalArgumentException("Валюта должна быть указана");
+        }
+        if (packages == null) {
+            throw new IllegalArgumentException("Список упаковок не может быть пустым");
+        }
+        if (packages().size() < 1) {
+            throw new IllegalArgumentException("Упаковок не может быть меньше 1");
+        }
+    }
     public Weight weightAllPackages() {
         return packages.stream()
                 .map(Pack::weight)

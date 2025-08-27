@@ -11,6 +11,6 @@ public class StepNormalizeFactory {
     private final StepNormalizeProvider stepNormalizeProvider;
 
     public int create() {
-        return stepNormalizeProvider.get();
+        return stepNormalizeProvider.getStepNormalize();
     }
 }

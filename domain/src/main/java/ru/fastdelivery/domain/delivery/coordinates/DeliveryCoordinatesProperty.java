@@ -1,6 +1,7 @@
 package ru.fastdelivery.domain.delivery.coordinates;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,9 +9,10 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class DeliveryPoint {
+@AllArgsConstructor
+public class DeliveryCoordinatesProperty {
     @NotBlank
-    private Latitude latitude;
+    private LatitudeProperty latitude;
     @NotBlank
-    private Longitude longitude;
+    private LongitudeProperty longitude;
 }

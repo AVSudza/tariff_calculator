@@ -22,6 +22,7 @@ import ru.fastdelivery.domain.common.weight.WeightPropertiesProvider;
 import ru.fastdelivery.domain.common.width.Width;
 import ru.fastdelivery.domain.common.width.WidthPropertiesProvider;
 import ru.fastdelivery.domain.delivery.pack.Pack;
+import ru.fastdelivery.domain.delivery.points.*;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
 import ru.fastdelivery.presentation.api.request.CalculatePackagesRequest;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
@@ -41,6 +42,7 @@ public class CalculateController {
     private final WidthPropertiesProvider widthPropertiesProvider;
     private final HeightPropertiesProvider heightPropertiesProvider;
     private final StepNormalizeProvider stepNormalizeProvider;
+    private final CoordinatesPropertiesProvider coordinatesPropertiesProvider;
 
     @PostMapping
     @Operation(summary = "Расчет стоимости по упаковкам груза")
@@ -49,7 +51,7 @@ public class CalculateController {
             @ApiResponse(responseCode = "400", description = "Invalid input provided")
     })
     public CalculatePackagesResponse calculate(
-            @Valid @RequestBody CalculatePackagesRequest request) {
+            @Valid @RequestBody CalculatePackagesRequest request) throws IllegalArgumentException {
 
         var packs = request.packages().stream()
                 .map(cargoPackage -> new Pack(
@@ -62,8 +64,13 @@ public class CalculateController {
                 )
                 .toList();
 
-        var shipment = new Shipment(packs, currencyFactory.create(request.currencyCode()),
-                request.destination(), request.departure());
+        var shipment = new Shipment(
+                packs,
+                currencyFactory.create(request.currencyCode()),
+                new DestinationPointFactory(coordinatesPropertiesProvider).create(
+                        request.destination().getLatitude(), request.destination().getLongitude()),
+                new DeparturePointFactory(coordinatesPropertiesProvider).create(
+                        request.departure().getLatitude(), request.departure().getLongitude()));
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         var minimalPrice = tariffCalculateUseCase.minimalPrice();
         return new CalculatePackagesResponse(calculatedPrice, minimalPrice);

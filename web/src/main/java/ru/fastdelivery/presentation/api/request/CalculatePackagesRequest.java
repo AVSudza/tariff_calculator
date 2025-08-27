@@ -2,8 +2,8 @@ package ru.fastdelivery.presentation.api.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import ru.fastdelivery.domain.delivery.points.Departure;
-import ru.fastdelivery.domain.delivery.points.Destination;
+import ru.fastdelivery.domain.delivery.points.DeparturePoint;
+import ru.fastdelivery.domain.delivery.points.DestinationPoint;
 
 import java.util.List;
 
@@ -32,10 +32,10 @@ public record CalculatePackagesRequest(
         @Schema(description = "Координаты пункта отправления",
                 example = "{\"latitude\": 73.398660, \"longitude\": 55.027532}")
         @NotNull
-        Destination destination,
+        DestinationPoint destination,
 
         @Schema(description = "Координаты пункта получения",
                 example = "{\"latitude\": 77.398660, \"longitude\": 54.027532}")
         @NotNull
-        Departure departure) {
+        DeparturePoint departure) {
 }

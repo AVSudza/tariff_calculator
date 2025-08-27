@@ -32,6 +32,15 @@ class WeightTest {
     }
 
     @Test
+    @DisplayName("Попытка создать вес больше максимального -> исключение")
+    void whenGramsMoreMax_thenException() {
+        var weightGrams = new BigInteger("150001");
+        assertThatThrownBy(() -> new Weight(weightGrams, weightPropertiesProvider.getMax()))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Сравнение объектов веса по хешкоду")
     void equalsTypeWidth_same() {
         var weight = new Weight(new BigInteger("1000"), weightPropertiesProvider.getMax());
         var weightSame = new Weight(new BigInteger("1000"), weightPropertiesProvider.getMax());
@@ -42,6 +51,7 @@ class WeightTest {
     }
 
     @Test
+    @DisplayName("Созданный объект веса не null")
     void equalsNull_false() {
         var weight = new Weight(new BigInteger("4"), weightPropertiesProvider.getMax());
 

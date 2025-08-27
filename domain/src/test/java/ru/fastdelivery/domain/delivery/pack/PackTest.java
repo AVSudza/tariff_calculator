@@ -1,6 +1,7 @@
 package ru.fastdelivery.domain.delivery.pack;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -31,14 +32,7 @@ class PackTest {
     }
 
     @Test
-    void whenWeightMoreThanMaxWeight_thenThrowException() {
-        assertThatThrownBy(() -> new Pack(
-                new Weight(BigInteger.valueOf(150_001), weightPropertiesProvider.getMax()),
-                lengthZero, widthZero, heightZero, BigInteger.valueOf(50)))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
+    @DisplayName("Если вес упаковки меньше максимального -> объект упаковки создан")
     void whenWeightLessThanMaxWeight_thenObjectCreated() {
         assertThat(new Pack(
                 new Weight(BigInteger.valueOf(1_000), weightPropertiesProvider.getMax()),
@@ -47,6 +41,16 @@ class PackTest {
     }
 
     @Test
+    @DisplayName("Если вес упаковки больше максимального -> throw")
+    void whenWeightMoreThanMaxWeight_thenThrowException() {
+        assertThatThrownBy(() -> new Pack(
+                new Weight(BigInteger.valueOf(150_001), weightPropertiesProvider.getMax()),
+                lengthZero, widthZero, heightZero, BigInteger.valueOf(50)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("Если вычисляется объем -> размеры нормализованы")
     void whenCalculatingVolume_thenDimensionsNormalized() {
         Pack pack = new Pack(new Weight(BigInteger.valueOf(4564), weightPropertiesProvider.getMax()),
                 new Length(BigInteger.valueOf(345)),

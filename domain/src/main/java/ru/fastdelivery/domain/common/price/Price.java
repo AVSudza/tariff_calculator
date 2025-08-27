@@ -31,4 +31,12 @@ public record Price(
         }
         return new Price(this.amount.max(price.amount), this.currency);
     }
+
+    @Override
+    public String toString() {
+        return "Price{" +
+                "amount=" + amount +
+                ", currency=" + currency +
+                '}';
+    }
 }
